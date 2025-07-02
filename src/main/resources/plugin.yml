@@ -1,0 +1,8 @@
+name: Mythic-Distribute
+version: '1.0'
+main: org.weiwei.mythicDistribute.Main
+api-version: '1.21'
+depends:
+  - MythicMobs
+commands:
+  mythicDistribute: {}

@@ -1,0 +1,37 @@
+MESSAGE:
+  PREFIX: '§f〔幻嵐助手〕§r '
+  RELOAD: '§a已重新載入所有設定檔'
+  SUB_NOT_FOUND: '§c未找到子指令'
+  NO_PERMISSION: '§c你沒有權限使用此指令'
+  UNKNOWN_COMMAND: '§c未知的參數 {0}'
+
+SUB_COMMAND:
+  RELOAD: 重新載入模組設定檔
+
+SEND_PRIZES:
+  PLAYER:
+    TOP:
+      - '&8&m                                        &r'
+      - '&6🎖 &e你在 &c%boss_name% &e戰鬥中獲得第 &6%rank% &e名！'
+      - ''
+      - '&c🩸 總傷害：&f%total_damage% &7| 單次最高：&f%max_damage%'
+      - '&b📊 參與度：&f%contribution%%'
+      - '&a🎁 你獲得了排行獎勵！'
+      - '&8&m                                        &r'
+    PARTICIPANT:
+      - '&8&m                                        &r'
+      - '&e🤝 你參與了 &c%boss_name% &e戰鬥'
+      - ''
+      - '&c🩸 總傷害：&f%total_damage% &7| 單次最高：&f%max_damage%'
+      - '&a🎁 你獲得了參與獎勵！'
+      - '&8&m                                        &r'
+
+  BROADCAST:
+    KILL:
+      - '&8&m                                        &r'
+      - '&6⚔️ &e%killer_name% &7擊殺了世界 Boss：&c%boss_name%'
+      - ''
+      - '&e🥇 排行榜：'
+      - '%rank_lines%' # 此處會動態替換為每名玩家的排名行
+      - '&a🎁 獎勵已成功發送！'
+      - '&8&m                                        &r'

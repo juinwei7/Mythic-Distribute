@@ -1,0 +1,348 @@
+boss_rewards:
+  #第一副本
+  oneboss:
+    name: 祀林鳴魔帝
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% st魔帝鳴骨 2'
+            - 'money give %player% 400'
+        2:
+          command:
+            - 'mm items give %player% st魔帝鳴骨 1'
+            - 'money give %player% 300'
+        3:
+          command:
+            - 'mm items give %player% st魔帝鳴骨 1'
+            - 'money give %player% 200'
+      participants:
+        min_damage: 80
+        command:
+          - 'money give %player% 100'
+  #第一副本 (隱王) - 龍淵暗魔帝
+  Hiddeoneboss_boss:
+    name: 龍淵暗魔帝
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% st魔帝鳴骨 2'
+            - 'money give %player% 500'
+        2:
+          command:
+            - 'mm items give %player% st魔帝鳴骨 1'
+            - 'money give %player% 400'
+        3:
+          command:
+            - 'money give %player% 300'
+      participants:
+        min_damage: 120
+        command:
+          - 'money give %player% 100'
+
+  #第二副本
+  Code_Ice_boss進化:
+    name: '冰魔.麥爾斯'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 2'
+            - 'money give %player% 600'
+        2:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 1'
+            - 'money give %player% 500'
+        3:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 1'
+            - 'money give %player% 400'
+      participants:
+        min_damage: 100
+        command:
+          - 'money give %player% 300'
+  Code_Ice_bossmonut進化:
+    name: '暴虐.雪克夫'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 2'
+            - 'money give %player% 600'
+        2:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 1'
+            - 'money give %player% 500'
+        3:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 1'
+            - 'money give %player% 400'
+      participants:
+        min_damage: 100
+        command:
+          - 'money give %player% 300'
+  #第二副本 (隱王) - 愛斯基雪姬魔爾思靈
+  EdelWeiss:
+    name: '愛斯基雪姬魔爾思靈'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 2'
+            - 'money give %player% 700'
+        2:
+          command:
+            - 'mm items give %player% 冰st凜冬之心 1'
+            - 'money give %player% 600'
+        3:
+          command:
+            - 'money give %player% 500'
+      participants:
+        min_damage: 100
+        command:
+          - 'money give %player% 380'
+
+  #第三副本
+  Code_m002:
+    name: '未眠.拉斐爾'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 天st淨光聖羽 2'
+            - 'money give %player% 800'
+        2:
+          command:
+            - 'mm items give %player% 天st淨光聖羽 1'
+            - 'money give %player% 700'
+        3:
+          command:
+            - 'mm items give %player% 天st淨光聖羽 1'
+            - 'money give %player% 600'
+      participants:
+        min_damage: 220
+        command:
+          - 'money give %player% 480'
+  #第三副本 (隱王) - 覺醒.拉斐爾
+  YirouBossTwo:
+    name: '未眠.拉斐爾'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 天st淨光聖羽 2'
+            - 'money give %player% 1000'
+        2:
+          command:
+            - 'mm items give %player% 天st淨光聖羽 1'
+            - 'money give %player% 800'
+        3:
+          command:
+            - 'money give %player% 700'
+      participants:
+        min_damage: 280
+        command:
+          - 'money give %player% 580'
+
+  #第四副本
+  hana:
+    name: '月藝女琳'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 月st月藝燄心 2'
+            - 'money give %player% 1600'
+        2:
+          command:
+            - 'mm items give %player% 月st月藝燄心 1'
+            - 'money give %player% 1400'
+        3:
+          command:
+            - 'mm items give %player% 月st月藝燄心 1'
+            - 'money give %player% 1200'
+      participants:
+        min_damage: 280
+        command:
+          - 'money give %player% 880'
+  #第四副本 (隱王) - 月仙赤帝
+  Archangel:
+    name: '月仙赤帝'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 月st月藝燄心 2'
+            - 'money give %player% 1800'
+        2:
+          command:
+            - 'mm items give %player% 月st月藝燄心 1'
+            - 'money give %player% 1600'
+        3:
+          command:
+            - 'money give %player% 1400'
+      participants:
+        min_damage: 320
+        command:
+          - 'money give %player% 1080'
+
+  #第五副本
+  toro_knight_horse:
+    name: '竺軒騏驎'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 1'
+            - 'money give %player% 2200'
+        2:
+          command:
+            - 'money give %player% 2000'
+        3:
+          command:
+            - 'money give %player% 1800'
+      participants:
+        min_damage: 320
+        command:
+          - 'money give %player% 1280'
+  toro_knight:
+    name: '起源之主-殷振博壡'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 2'
+            - 'money give %player% 2200'
+        2:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 1'
+            - 'money give %player% 2000'
+        3:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 1'
+            - 'money give %player% 1800'
+      participants:
+        min_damage: 600
+        command:
+          - 'money give %player% 1280'
+  #第五副本 (隱王) - 龍磐高僧
+  Dragon_Monk:
+    name: '龍磐高僧'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 2'
+            - 'money give %player% 2800'
+        2:
+          command:
+            - 'mm items give %player% 璃st禁忌異章 1'
+            - 'money give %player% 2200'
+        3:
+          command:
+            - 'money give %player% 2000'
+      participants:
+        min_damage: 700
+        command:
+          - 'money give %player% 1480'
+
+  #第六副本
+  xiddri:
+    name: '雷焰龍魔使'
+    broadcast: false
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'mm items give %player% 賽st源起之核 2'
+            - 'money give %player% 3600'
+        2:
+          command:
+            - 'mm items give %player% 賽st源起之核 1'
+            - 'money give %player% 3200'
+        3:
+          command:
+            - 'mm items give %player% 賽st源起之核 1'
+            - 'money give %player% 2800'
+      participants:
+        min_damage: 480
+        command:
+          - 'money give %player% 2080'
+
+  #世界王 (艾斯佩希五行帝后)
+  Code_m001:
+    name: '艾斯佩希五行帝后'
+    broadcast: true
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'money give %player% 10000'
+            - 'exp give %player% 2000'
+            - 'points give %player% 5'
+        2:
+          command:
+            - 'money give %player% 5000'
+            - 'exp give %player% 800'
+            - 'points give %player% 3'
+        3:
+          command:
+            - 'money give %player% 2500'
+            - 'points give %player% 1'
+      participants:
+        min_damage: 1000
+        command:
+          - 'money give %player% 1200'
+
+  #世界王 (幻羽功夫熊貓)
+  ink[Main]Wu:
+    name: '幻羽功夫熊貓'
+    broadcast: true
+    discord: true
+    strategy:
+      top:
+        1:
+          command:
+            - 'money give %player% 12000'
+            - 'exp give %player% 2500'
+            - 'points give %player% 8'
+        2:
+          command:
+            - 'money give %player% 5000'
+            - 'exp give %player% 1000'
+            - 'points give %player% 6'
+        3:
+          command:
+            - 'money give %player% 2500'
+            - 'points give %player% 2'
+      participants:
+        min_damage: 1000
+        command:
+          - 'money give %player% 1200'
