@@ -17,6 +17,7 @@
     </properties>
 
     <build>
+        <finalName>mythic-distribute</finalName>
         <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
@@ -67,13 +68,17 @@
             <url>https://mvn.lumine.io/repository/maven-public/</url>
         </repository>
 
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/juinwei7/*</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -94,12 +99,12 @@
         </dependency>
 
         <!--    Player-Data    -->
+        <!-- Player-Data -->
         <dependency>
-            <groupId>Player-Data</groupId>
-            <artifactId>Player-Data</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/Player-Data-1.0.jar</systemPath>
+            <groupId>org.weiwei</groupId>
+            <artifactId>player-data-api</artifactId>
+            <version>1.0.3</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>

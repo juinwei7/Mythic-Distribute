@@ -14,6 +14,7 @@ public class RewardDistribution {
     private String name;            // 顯示名稱
     private boolean broadcast;      // 是否廣播
     private boolean discord;        // 是否發送到 Discord
+    private List<DropReward> drop = new ArrayList<>(); // BOSS 死亡掉落
     private Strategy strategy;      // 獎勵策略
 
     @Data
@@ -32,5 +33,11 @@ public class RewardDistribution {
     public static class ParticipantsReward {
         private int min_damage;
         private List<String> command = new ArrayList<>();
+    }
+
+    @Data
+    public static class DropReward {
+        private String itemId;
+        private double chance;
     }
 }

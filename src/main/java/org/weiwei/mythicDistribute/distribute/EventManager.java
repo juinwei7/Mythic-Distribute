@@ -1,8 +1,10 @@
 package org.weiwei.mythicDistribute.distribute;
 
 import io.lumine.mythic.bukkit.MythicBukkit;
+import io.lumine.mythic.bukkit.BukkitAdapter;
 import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
+import io.lumine.mythic.core.items.MythicItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -11,13 +13,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.inventory.ItemStack;
 import org.weiwei.mythicDistribute.Main;
 import org.weiwei.mythicDistribute.entity.RewardDistribution;
 import org.weiwei.mythicDistribute.entity.RewardDistributionManager;
 import org.weiwei.mythicDistribute.util.ColorConversion;
 import org.weiwei.mythicDistribute.util.Config;
 import org.weiwei.mythicDistribute.util.Message;
-import org.weiwei.playerData.api.DiscordHookApi;
+import org.weiwei.playerdata.api.PlayerDataRegistry;
+import org.weiwei.playerdata.api.service.DiscordHookService;
+import org.weiwei.playerdata.api.service.PlayerDataService;
 
 import java.awt.*;
 import java.util.*;
@@ -30,6 +35,7 @@ public class EventManager implements Listener {
         Bukkit.getPluginManager().registerEvents(new EventManager(), Main.getInst());
     }
 
+    static DiscordHookService discordHookService  = PlayerDataRegistry.getDiscordHookService();
 
     // 玩家對 Boss 傷害時紀錄
     @EventHandler
@@ -63,6 +69,8 @@ public class EventManager implements Listener {
 
         RewardDistribution distribution = RewardDistributionManager.getReward(mobId);
         List<RewardDistribution.RewardGroup> topList = distribution.getStrategy().getTop();
+
+        handleDrops(event, distribution);
 
         // 傷害排名列表
         List<DamageCalculation> damageList = DamageCalculation.calculateRankings(mob.getUniqueId());
@@ -113,6 +121,26 @@ public class EventManager implements Listener {
 
         // 最後清除紀錄
         DamageCalculation.clearDamage(mob.getUniqueId());
+    }
+
+    private void handleDrops(MythicMobDeathEvent event, RewardDistribution distribution) {
+        if (distribution.getDrop() == null || distribution.getDrop().isEmpty()) return;
+
+        for (RewardDistribution.DropReward drop : distribution.getDrop()) {
+            if (drop.getItemId() == null || drop.getItemId().isBlank()) continue;
+            if (Math.random() > drop.getChance()) continue;
+
+            Optional<MythicItem> mythicItem = MythicBukkit.inst().getItemManager().getItem(drop.getItemId());
+            if (mythicItem.isEmpty()) {
+                Main.getInst().getLogger().warning("找不到 MythicMobs 物品: " + drop.getItemId());
+                continue;
+            }
+
+            ItemStack itemStack = BukkitAdapter.adapt(mythicItem.get().generateItemStack(1));
+            if (itemStack != null) {
+                event.getDrops().add(itemStack);
+            }
+        }
     }
 
     // 發送玩家獎勵訊息
@@ -173,7 +201,7 @@ public class EventManager implements Listener {
         String discordMessage = String.join("\n", discordLines);
 
         // 發送 Discord 通知
-        DiscordHookApi.sendEmbed(
+        discordHookService.sendEmbed(
                 Config.getConfig().getString(Config.DISCORD_CHANNEL),
                 "BOSS 獎勵通知",
                 "玩家 " + killName + " 成功擊敗了 BOSS " + rewardDistribution.getName(),
@@ -245,7 +273,7 @@ public class EventManager implements Listener {
 
         String message = String.join("\n", dcLines);
 
-        DiscordHookApi.sendEmbed(
+        discordHookService.sendEmbed(
                 Config.getConfig().getString(Config.DISCORD_CHANNEL),
                 "🎖 BOSS 擊殺通知",
                 "玩家 **" + killName + "** 成功擊敗了 **" + rewardDistribution.getName() + "**！",

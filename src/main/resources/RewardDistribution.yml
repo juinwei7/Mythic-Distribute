@@ -4,6 +4,8 @@ boss_rewards:
     name: 祀林鳴魔帝
     broadcast: false
     discord: true
+    drop:
+      - st_certificate01 0.5
     strategy:
       top:
         1:
@@ -27,6 +29,8 @@ boss_rewards:
     name: 龍淵暗魔帝
     broadcast: false
     discord: true
+    drop:
+      - st_certificate01 0.5
     strategy:
       top:
         1:
@@ -50,6 +54,8 @@ boss_rewards:
     name: '冰魔.麥爾斯'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate02 0.5
     strategy:
       top:
         1:
@@ -118,6 +124,8 @@ boss_rewards:
     name: '未眠.拉斐爾'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate02 0.5
     strategy:
       top:
         1:
@@ -141,6 +149,8 @@ boss_rewards:
     name: '未眠.拉斐爾'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate03 0.5
     strategy:
       top:
         1:
@@ -164,6 +174,8 @@ boss_rewards:
     name: '月藝女琳'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate04 0.5
     strategy:
       top:
         1:
@@ -187,6 +199,8 @@ boss_rewards:
     name: '月仙赤帝'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate04 0.5
     strategy:
       top:
         1:
@@ -210,6 +224,8 @@ boss_rewards:
     name: '竺軒騏驎'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate05 0.2
     strategy:
       top:
         1:
@@ -230,6 +246,8 @@ boss_rewards:
     name: '起源之主-殷振博壡'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate05 0.5
     strategy:
       top:
         1:
@@ -253,6 +271,8 @@ boss_rewards:
     name: '龍磐高僧'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate05 0.5
     strategy:
       top:
         1:
@@ -276,6 +296,8 @@ boss_rewards:
     name: '雷焰龍魔使'
     broadcast: false
     discord: true
+    drop:
+      - st_certificate06 0.5
     strategy:
       top:
         1:
@@ -304,16 +326,19 @@ boss_rewards:
       top:
         1:
           command:
+            - 'mm items give %player% act101 2'
             - 'money give %player% 10000'
             - 'exp give %player% 2000'
             - 'points give %player% 5'
         2:
           command:
+            - 'mm items give %player% act101 1'
             - 'money give %player% 5000'
             - 'exp give %player% 800'
             - 'points give %player% 3'
         3:
           command:
+            - 'mm items give %player% act101 1'
             - 'money give %player% 2500'
             - 'points give %player% 1'
       participants:
@@ -330,16 +355,19 @@ boss_rewards:
       top:
         1:
           command:
+            - 'mm items give %player% act201 2'
             - 'money give %player% 12000'
             - 'exp give %player% 2500'
             - 'points give %player% 8'
         2:
           command:
+            - 'mm items give %player% act201 1'
             - 'money give %player% 5000'
             - 'exp give %player% 1000'
             - 'points give %player% 6'
         3:
           command:
+            - 'mm items give %player% act201 1'
             - 'money give %player% 2500'
             - 'points give %player% 2'
       participants:

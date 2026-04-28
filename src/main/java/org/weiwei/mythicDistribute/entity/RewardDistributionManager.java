@@ -27,6 +27,26 @@ public class RewardDistributionManager {
             config.setName(yaml.getString("boss_rewards." + bossId + ".name"));
             config.setBroadcast(yaml.getBoolean("boss_rewards." + bossId + ".broadcast", false));
             config.setDiscord(yaml.getBoolean("boss_rewards." + bossId + ".discord", false));
+
+            List<RewardDistribution.DropReward> dropList = new ArrayList<>();
+            for (String line : yaml.getStringList("boss_rewards." + bossId + ".drop")) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length < 2) {
+                    Main.getInst().getLogger().warning("無法解析 boss_rewards." + bossId + ".drop 項目: " + line);
+                    continue;
+                }
+
+                try {
+                    RewardDistribution.DropReward drop = new RewardDistribution.DropReward();
+                    drop.setItemId(parts[0]);
+                    drop.setChance(Double.parseDouble(parts[1]));
+                    dropList.add(drop);
+                } catch (NumberFormatException e) {
+                    Main.getInst().getLogger().warning("無法解析 boss_rewards." + bossId + ".drop 機率: " + line);
+                }
+            }
+            config.setDrop(dropList);
+
             RewardDistribution.Strategy strategy = new RewardDistribution.Strategy();
 
             // TOP 區塊
