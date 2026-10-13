@@ -78,6 +78,17 @@ public class RewardDistributionManager {
             }
 
             config.setStrategy(strategy);
+
+            // DAILY_FIRST 區塊：每日首殺加碼
+            String dailyFirstPath = "boss_rewards." + bossId + ".daily_first";
+            if (yaml.contains(dailyFirstPath)) {
+                RewardDistribution.DailyFirst dailyFirst = new RewardDistribution.DailyFirst();
+                dailyFirst.setGroup(yaml.getString(dailyFirstPath + ".group", bossId));
+                dailyFirst.setCommand(yaml.getStringList(dailyFirstPath + ".command"));
+                dailyFirst.setMessage(yaml.getString(dailyFirstPath + ".message", ""));
+                config.setDailyFirst(dailyFirst);
+            }
+
             bossRewardMap.put(bossId, config);
             Main.getInst().getLogger().info("載入獎勵配置成功: " + bossId);
         }

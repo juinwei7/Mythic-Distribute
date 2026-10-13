@@ -32,6 +32,7 @@ import java.util.List;
 public class EventManager implements Listener {
 
     public static void register() {
+        DailyFirstTracker.load();
         Bukkit.getPluginManager().registerEvents(new EventManager(), Main.getInst());
     }
 
@@ -114,6 +115,9 @@ public class EventManager implements Listener {
             }
         }
 
+        // 每日首殺加碼
+        handleDailyFirst(distribution, damageList, rewarded);
+
         // 發送廣播訊息
         Player killPlayer = event.getKiller() instanceof Player ? (Player) event.getKiller() : null;
         String killPlayerName = killPlayer != null ? killPlayer.getName() : "未知玩家";
@@ -121,6 +125,34 @@ public class EventManager implements Listener {
 
         // 最後清除紀錄
         DamageCalculation.clearDamage(mob.getUniqueId());
+    }
+
+    /**
+     * 每日首殺加碼：拿到排名獎、或總傷害達參與門檻的在線玩家，每個 group（副本）每天第一次多發一份。
+     * 參考 Wynncraft Raid 的「每日首通加碼、不鎖次數」：之後照常打、照常領原本的獎勵。
+     */
+    private void handleDailyFirst(RewardDistribution distribution, List<DamageCalculation> damageList, Set<UUID> topRewarded) {
+        RewardDistribution.DailyFirst dailyFirst = distribution.getDailyFirst();
+        if (dailyFirst == null || dailyFirst.getCommand() == null || dailyFirst.getCommand().isEmpty()) return;
+
+        RewardDistribution.ParticipantsReward pr = distribution.getStrategy().getParticipants();
+        for (DamageCalculation dc : damageList) {
+            UUID playerId = dc.getPlayerUUID();
+            boolean eligible = topRewarded.contains(playerId) || (pr != null && dc.getTotalDamage() >= pr.getMin_damage());
+            if (!eligible) continue;
+
+            Player player = Bukkit.getPlayer(playerId);
+            if (player == null || !player.isOnline()) continue;
+            if (!DailyFirstTracker.tryClaim(dailyFirst.getGroup(), playerId)) continue;
+
+            for (String cmd : dailyFirst.getCommand()) {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
+            }
+            if (dailyFirst.getMessage() != null && !dailyFirst.getMessage().isBlank()) {
+                player.sendMessage(ColorConversion.translateHexCodes(dailyFirst.getMessage()));
+            }
+            Main.getInst().getLogger().info("每日首殺加碼：" + player.getName() + "（" + dailyFirst.getGroup() + "）");
+        }
     }
 
     private void handleDrops(MythicMobDeathEvent event, RewardDistribution distribution) {
