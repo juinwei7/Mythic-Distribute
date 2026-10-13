@@ -11,8 +11,10 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.weiwei.mythicDistribute.Main;
 import org.weiwei.mythicDistribute.entity.RewardDistribution;
@@ -38,6 +40,9 @@ public class EventManager implements Listener {
 
     static DiscordHookService discordHookService  = PlayerDataRegistry.getDiscordHookService();
 
+    // 有記錄傷害、還沒發過獎的 BOSS（實體 UUID → 怪物 ID）
+    private static final Map<UUID, String> trackedBosses = new HashMap<>();
+
     // 玩家對 Boss 傷害時紀錄
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
@@ -57,24 +62,53 @@ public class EventManager implements Listener {
 
         // 儲存傷害
         DamageCalculation.addDamage(activeMob.getUniqueId(), player.getUniqueId(), event.getFinalDamage());
+        trackedBosses.put(activeMob.getUniqueId(), bossId);
     }
 
     // BOSS 死亡事件
     @EventHandler
     public void onMythicMobDeath(MythicMobDeathEvent event) {
         ActiveMob mob = event.getMob();
-        String mobId = mob.getType().getInternalName();
+        trackedBosses.remove(mob.getUniqueId());
+        String killerName = event.getKiller() instanceof Player killer ? killer.getName() : "未知玩家";
+        distribute(mob.getType().getInternalName(), mob.getUniqueId(), killerName, event.getDrops());
+    }
 
+    /**
+     * 保底：MythicMobs 偶爾會漏處理死亡（它的非同步時鐘在死亡事件輪到它之前先把怪註銷），
+     * 這時不會有 MythicMobDeathEvent。MM 的死亡處理是 HIGH，到 HIGHEST 還留在 trackedBosses 的就是被漏掉的頭目，改由這裡發獎。
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDeath(EntityDeathEvent event) {
+        UUID mobUuid = event.getEntity().getUniqueId();
+        String bossId = trackedBosses.remove(mobUuid);
+        if (bossId == null) return;
+
+        Player killer = event.getEntity().getKiller();
+        String killerName = killer != null ? killer.getName() : "未知玩家";
+        Main.getInst().getLogger().warning("MythicMobs 沒有處理 " + bossId + " 的死亡（擊殺者：" + killerName + "），改由保底發放獎勵");
+
+        // MM 正常處理時會依 PreventOtherDrops 清掉原版掉落物，這裡比照
+        boolean preventOtherDrops = MythicBukkit.inst().getMobManager().getMythicMob(bossId)
+                .map(mythicMob -> mythicMob.getPreventOtherDrops())
+                .orElse(false);
+        if (preventOtherDrops) {
+            event.getDrops().clear();
+        }
+        distribute(bossId, mobUuid, killerName, event.getDrops());
+    }
+
+    private void distribute(String mobId, UUID mobUuid, String killerName, List<ItemStack> drops) {
         // 沒有配置獎勵的 BOSS 就跳過
         if (!RewardDistributionManager.hasReward(mobId)) return;
 
         RewardDistribution distribution = RewardDistributionManager.getReward(mobId);
         List<RewardDistribution.RewardGroup> topList = distribution.getStrategy().getTop();
 
-        handleDrops(event, distribution);
+        handleDrops(drops, distribution);
 
         // 傷害排名列表
-        List<DamageCalculation> damageList = DamageCalculation.calculateRankings(mob.getUniqueId());
+        List<DamageCalculation> damageList = DamageCalculation.calculateRankings(mobUuid);
         if (damageList.isEmpty()) return;
 
         // 已得獎的玩家 UUID 清單（避免重複得獎）
@@ -119,12 +153,10 @@ public class EventManager implements Listener {
         handleDailyFirst(distribution, damageList, rewarded);
 
         // 發送廣播訊息
-        Player killPlayer = event.getKiller() instanceof Player ? (Player) event.getKiller() : null;
-        String killPlayerName = killPlayer != null ? killPlayer.getName() : "未知玩家";
-        handleBossResult(Message.SEND_PRIZES__BROADCAST__KILL, killPlayerName, distribution, damageList, distribution.isBroadcast(), distribution.isDiscord());
+        handleBossResult(Message.SEND_PRIZES__BROADCAST__KILL, killerName, distribution, damageList, distribution.isBroadcast(), distribution.isDiscord());
 
         // 最後清除紀錄
-        DamageCalculation.clearDamage(mob.getUniqueId());
+        DamageCalculation.clearDamage(mobUuid);
     }
 
     /**
@@ -155,7 +187,7 @@ public class EventManager implements Listener {
         }
     }
 
-    private void handleDrops(MythicMobDeathEvent event, RewardDistribution distribution) {
+    private void handleDrops(List<ItemStack> drops, RewardDistribution distribution) {
         if (distribution.getDrop() == null || distribution.getDrop().isEmpty()) return;
 
         for (RewardDistribution.DropReward drop : distribution.getDrop()) {
@@ -170,7 +202,7 @@ public class EventManager implements Listener {
 
             ItemStack itemStack = BukkitAdapter.adapt(mythicItem.get().generateItemStack(1));
             if (itemStack != null) {
-                event.getDrops().add(itemStack);
+                drops.add(itemStack);
             }
         }
     }
