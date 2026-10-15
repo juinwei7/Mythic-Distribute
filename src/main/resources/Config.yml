@@ -1,2 +1,44 @@
 DISCORD_CHANNEL:
   CHANNEL_ID: "1172813953013907506"
+
+# 每週加成副本：本週是哪座由大廳 huanlanCore 輪替（/wl featured），這裡讀 placeholder，代號同 daily_first.group
+# 讀不到或本週沒有加成就不發，原本的獎勵照常；次數記在 featured-daily.yml，台灣時間午夜重置
+featured:
+  enabled: true
+  placeholder: '%huanlan-core_featured_dungeon_id%'
+  # 加成副本的每日首殺加碼跑幾次
+  daily_first_repeat: 2
+  # 每人每天每座副本前幾次擊殺（排名獎或傷害達參與門檻）多發一份
+  daily_cap: 3
+  message: '&d〔本週加成〕&f今天第 %count%/%cap% 次：%reward%'
+  groups:
+    stst01:
+      reward: '魔帝鳴骨 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% st魔帝鳴骨 1'
+        - 'dungeoncoin give %player% 5'
+    stst02:
+      reward: '凜冬之心 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% 冰st凜冬之心 1'
+        - 'dungeoncoin give %player% 5'
+    stst03:
+      reward: '淨光聖羽 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% 天st淨光聖羽 1'
+        - 'dungeoncoin give %player% 5'
+    stst04:
+      reward: '月藝燄心 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% 月st月藝燄心 1'
+        - 'dungeoncoin give %player% 5'
+    stst05:
+      reward: '禁忌異章 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% 璃st禁忌異章 1'
+        - 'dungeoncoin give %player% 5'
+    stst06:
+      reward: '源起之核 ×1、討伐印記 5'
+      command:
+        - 'mm items give %player% 賽st源起之核 1'
+        - 'dungeoncoin give %player% 5'

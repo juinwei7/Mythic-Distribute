@@ -35,6 +35,7 @@ public class EventManager implements Listener {
 
     public static void register() {
         DailyFirstTracker.load();
+        FeaturedBonus.load();
         Bukkit.getPluginManager().registerEvents(new EventManager(), Main.getInst());
     }
 
@@ -149,8 +150,11 @@ public class EventManager implements Listener {
             }
         }
 
-        // 每日首殺加碼
+        // 每日首殺加碼（本週加成副本跑兩次）
         handleDailyFirst(distribution, damageList, rewarded);
+
+        // 本週加成副本：每人每天前幾次多發一份
+        FeaturedBonus.handle(distribution, damageList, rewarded);
 
         // 一起打的人（整場送一次名單）
         handleParty(mobId, distribution, damageList);
@@ -171,6 +175,7 @@ public class EventManager implements Listener {
         if (dailyFirst == null || dailyFirst.getCommand() == null || dailyFirst.getCommand().isEmpty()) return;
 
         RewardDistribution.ParticipantsReward pr = distribution.getStrategy().getParticipants();
+        int repeat = FeaturedBonus.dailyFirstRepeat(dailyFirst.getGroup());
         for (DamageCalculation dc : damageList) {
             UUID playerId = dc.getPlayerUUID();
             boolean eligible = topRewarded.contains(playerId) || (pr != null && dc.getTotalDamage() >= pr.getMin_damage());
@@ -180,13 +185,16 @@ public class EventManager implements Listener {
             if (player == null || !player.isOnline()) continue;
             if (!DailyFirstTracker.tryClaim(dailyFirst.getGroup(), playerId)) continue;
 
-            for (String cmd : dailyFirst.getCommand()) {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
+            for (int i = 0; i < repeat; i++) {
+                for (String cmd : dailyFirst.getCommand()) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%player%", player.getName()));
+                }
             }
             if (dailyFirst.getMessage() != null && !dailyFirst.getMessage().isBlank()) {
-                player.sendMessage(ColorConversion.translateHexCodes(dailyFirst.getMessage()));
+                String suffix = repeat > 1 ? "&d（本週加成 ×" + repeat + "）" : "";
+                player.sendMessage(ColorConversion.translateHexCodes(dailyFirst.getMessage() + suffix));
             }
-            Main.getInst().getLogger().info("每日首殺加碼：" + player.getName() + "（" + dailyFirst.getGroup() + "）");
+            Main.getInst().getLogger().info("每日首殺加碼：" + player.getName() + "（" + dailyFirst.getGroup() + (repeat > 1 ? "，本週加成 ×" + repeat : "") + "）");
         }
     }
 

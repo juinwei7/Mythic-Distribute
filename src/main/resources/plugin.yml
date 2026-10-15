@@ -6,5 +6,6 @@ depend:
   - MythicMobs
 softdepend:
   - Player-Data
+  - PlaceholderAPI
 commands:
   mythicDistribute: {}

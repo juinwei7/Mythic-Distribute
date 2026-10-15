@@ -68,6 +68,12 @@
             <url>https://mvn.lumine.io/repository/maven-public/</url>
         </repository>
 
+        <!--  placeholderapi  -->
+        <repository>
+            <id>placeholderapi</id>
+            <url>https://repo.helpch.at/releases/</url>
+        </repository>
+
         <repository>
             <id>github</id>
             <url>https://maven.pkg.github.com/juinwei7/*</url>
@@ -104,6 +110,14 @@
             <groupId>org.weiwei</groupId>
             <artifactId>player-data-api</artifactId>
             <version>1.0.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--    PlaceholderAPI（讀 huanlanCore 的本週加成副本）    -->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.12.2</version>
             <scope>provided</scope>
         </dependency>
 
