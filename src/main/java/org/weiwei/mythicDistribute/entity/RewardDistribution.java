@@ -17,6 +17,7 @@ public class RewardDistribution {
     private List<DropReward> drop = new ArrayList<>(); // BOSS 死亡掉落
     private Strategy strategy;      // 獎勵策略
     private DailyFirst dailyFirst;  // 每日首殺加碼（沒設定就是 null）
+    private Party party;            // 一起打的人（沒設定就是 null）
 
     @Data
     public static class Strategy {
@@ -45,6 +46,17 @@ public class RewardDistribution {
         private String group;
         private List<String> command = new ArrayList<>();
         private String message;
+    }
+
+    /**
+     * 一起打的人：前 3 名加上總傷害達 min_damage 的在線玩家，整場只送一次名單。
+     * 指令裡的 %players% 換成空白分隔的玩家名（傷害高的在前），%boss% 換成怪物 ID。
+     * 用途：新手任務 BOSS 步驟「傷害夠就算」（task credit）、帶新人獎勵（ref admin party）。
+     */
+    @Data
+    public static class Party {
+        private int min_damage;
+        private List<String> command = new ArrayList<>();
     }
 
     @Data

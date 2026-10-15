@@ -89,6 +89,16 @@ public class RewardDistributionManager {
                 config.setDailyFirst(dailyFirst);
             }
 
+            // PARTY 區塊：一起打的人；沒寫 min_damage 就沿用參與獎門檻
+            String partyPath = "boss_rewards." + bossId + ".party";
+            if (yaml.contains(partyPath)) {
+                RewardDistribution.Party party = new RewardDistribution.Party();
+                int fallback = strategy.getParticipants() != null ? strategy.getParticipants().getMin_damage() : 0;
+                party.setMin_damage(yaml.getInt(partyPath + ".min_damage", fallback));
+                party.setCommand(yaml.getStringList(partyPath + ".command"));
+                config.setParty(party);
+            }
+
             bossRewardMap.put(bossId, config);
             Main.getInst().getLogger().info("載入獎勵配置成功: " + bossId);
         }

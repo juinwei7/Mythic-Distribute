@@ -152,6 +152,9 @@ public class EventManager implements Listener {
         // 每日首殺加碼
         handleDailyFirst(distribution, damageList, rewarded);
 
+        // 一起打的人（整場送一次名單）
+        handleParty(mobId, distribution, damageList);
+
         // 發送廣播訊息
         handleBossResult(Message.SEND_PRIZES__BROADCAST__KILL, killerName, distribution, damageList, distribution.isBroadcast(), distribution.isDiscord());
 
@@ -185,6 +188,31 @@ public class EventManager implements Listener {
             }
             Main.getInst().getLogger().info("每日首殺加碼：" + player.getName() + "（" + dailyFirst.getGroup() + "）");
         }
+    }
+
+    /**
+     * 一起打的人：傷害前 3 名，加上總傷害達 party.min_damage 的在線玩家（依傷害高到低排）。
+     * 每條指令只執行一次，%players% 換成整份名單，讓收指令的外掛看得到「誰跟誰一起打」。
+     */
+    private void handleParty(String mobId, RewardDistribution distribution, List<DamageCalculation> damageList) {
+        RewardDistribution.Party party = distribution.getParty();
+        if (party == null || party.getCommand() == null || party.getCommand().isEmpty()) return;
+
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < damageList.size(); i++) {
+            DamageCalculation dc = damageList.get(i);
+            if (i >= 3 && dc.getTotalDamage() < party.getMin_damage()) continue;
+            Player player = Bukkit.getPlayer(dc.getPlayerUUID());
+            if (player == null || !player.isOnline()) continue;
+            names.add(player.getName());
+        }
+        if (names.isEmpty()) return;
+
+        String players = String.join(" ", names);
+        for (String cmd : party.getCommand()) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replace("%players%", players).replace("%boss%", mobId));
+        }
+        Main.getInst().getLogger().info("一起打的人：" + mobId + " → " + players);
     }
 
     private void handleDrops(List<ItemStack> drops, RewardDistribution distribution) {
