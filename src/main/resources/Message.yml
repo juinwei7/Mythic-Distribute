@@ -18,7 +18,7 @@ SEND_PRIZES:
       - '&b📊 參與度：&f%contribution%%'
       - '&a🎁 你獲得了排行獎勵！'
       - '&8&m                                        &r'
-    PARTICIPANT:
+    PARTICIPANTS:
       - '&8&m                                        &r'
       - '&e🤝 你參與了 &c%boss_name% &e戰鬥'
       - ''
