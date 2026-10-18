@@ -8,8 +8,10 @@ import io.lumine.mythic.core.items.MythicItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -44,11 +46,12 @@ public class EventManager implements Listener {
     // 有記錄傷害、還沒發過獎的 BOSS（實體 UUID → 怪物 ID）
     private static final Map<UUID, String> trackedBosses = new HashMap<>();
 
-    // 玩家對 Boss 傷害時紀錄
+    // 玩家對 Boss 傷害時紀錄（近戰，以及玩家射出的弓箭、三叉戟等投射物）
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof LivingEntity target)) return;
-        if (!(event.getDamager() instanceof Player player)) return;
+        Player player = damagingPlayer(event.getDamager());
+        if (player == null) return;
 
         // 如果不是 MythicMob，則不處理
         boolean isMythicMob = MythicBukkit.inst().getMobManager().isMythicMob(target);
@@ -64,6 +67,12 @@ public class EventManager implements Listener {
         // 儲存傷害
         DamageCalculation.addDamage(activeMob.getUniqueId(), player.getUniqueId(), event.getFinalDamage());
         trackedBosses.put(activeMob.getUniqueId(), bossId);
+    }
+
+    private static Player damagingPlayer(Entity damager) {
+        if (damager instanceof Player player) return player;
+        if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player shooter) return shooter;
+        return null;
     }
 
     // BOSS 死亡事件
