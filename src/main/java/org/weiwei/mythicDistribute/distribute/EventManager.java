@@ -6,8 +6,6 @@ import io.lumine.mythic.bukkit.events.MythicMobDeathEvent;
 import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.items.MythicItem;
 import org.bukkit.Bukkit;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.NamespacedKey;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
@@ -71,20 +69,9 @@ public class EventManager implements Listener {
         trackedBosses.put(activeMob.getUniqueId(), bossId);
     }
 
-    // hu_pet 寵物的傷害來源是寵物的 ItemDisplay，PDC 記著主人 UUID
-    private static final NamespacedKey PET_OWNER = new NamespacedKey("hu_pet", "owner");
-
     private static Player damagingPlayer(Entity damager) {
         if (damager instanceof Player player) return player;
         if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player shooter) return shooter;
-        String owner = damager.getPersistentDataContainer().get(PET_OWNER, PersistentDataType.STRING);
-        if (owner != null) {
-            try {
-                return Bukkit.getPlayer(UUID.fromString(owner));
-            } catch (IllegalArgumentException ignored) {
-                return null;
-            }
-        }
         return null;
     }
 
