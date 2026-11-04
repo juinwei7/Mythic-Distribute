@@ -99,6 +99,14 @@ public class RewardDistributionManager {
                 config.setParty(party);
             }
 
+            // TOMBSTONE 區塊：頭目墓碑；寫 tombstone: true 或 tombstone 底下有 next 都算開啟
+            String tombPath = "boss_rewards." + bossId + ".tombstone";
+            if (yaml.isConfigurationSection(tombPath) || yaml.getBoolean(tombPath, false)) {
+                RewardDistribution.Tombstone tombstone = new RewardDistribution.Tombstone();
+                tombstone.setNext(yaml.getString(tombPath + ".next", ""));
+                config.setTombstone(tombstone);
+            }
+
             bossRewardMap.put(bossId, config);
             Main.getInst().getLogger().info("載入獎勵配置成功: " + bossId);
         }

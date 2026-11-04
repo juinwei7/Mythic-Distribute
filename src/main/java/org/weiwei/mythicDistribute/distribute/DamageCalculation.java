@@ -10,6 +10,8 @@ public class DamageCalculation {
 
     // 玩家對每個 Boss 的傷害紀錄
     private static final Map<UUID, Map<UUID, DamageCalculation>> bossDamageMap = new HashMap<>();
+    // 每隻 Boss 第一次被玩家打到的時間（墓碑算戰鬥多久）
+    private static final Map<UUID, Long> firstHitMap = new HashMap<>();
     private final UUID bossUUID;
     private final UUID playerUUID;
     private double maxDamage = 0;
@@ -31,6 +33,7 @@ public class DamageCalculation {
      */
     public static void addDamage(UUID bossId, UUID playerId, double damage) {
         bossDamageMap.putIfAbsent(bossId, new HashMap<>());
+        firstHitMap.putIfAbsent(bossId, System.currentTimeMillis());
         Map<UUID, DamageCalculation> playerDamageMap = bossDamageMap.get(bossId);
         DamageCalculation damCal = playerDamageMap.getOrDefault(playerId, new DamageCalculation(bossId, playerId));
         damCal.totalDamage += damage;
@@ -70,6 +73,14 @@ public class DamageCalculation {
      */
     public static void clearDamage(UUID bossId) {
         bossDamageMap.remove(bossId);
+        firstHitMap.remove(bossId);
+    }
+
+    /**
+     * Boss 第一次被玩家打到的時間（毫秒），沒紀錄回傳 0
+     */
+    public static long getFirstHitMillis(UUID bossId) {
+        return firstHitMap.getOrDefault(bossId, 0L);
     }
 
     /**

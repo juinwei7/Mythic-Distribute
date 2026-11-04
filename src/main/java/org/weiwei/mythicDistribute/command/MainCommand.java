@@ -7,6 +7,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.weiwei.mythicDistribute.Main;
 import org.weiwei.mythicDistribute.command.sub.ReloadCommand;
+import org.weiwei.mythicDistribute.command.sub.TombCommand;
 import org.weiwei.mythicDistribute.util.Message;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ public class MainCommand implements CommandExecutor, TabCompleter {
 
     public MainCommand() {
         new ReloadCommand().registerCommand(); // 註冊 Reload 指令
+        new TombCommand().registerCommand();   // 註冊頭目墓碑指令
 
 
     }

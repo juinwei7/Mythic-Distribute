@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.weiwei.mythicDistribute.command.MainCommand;
 import org.weiwei.mythicDistribute.distribute.EventManager;
+import org.weiwei.mythicDistribute.distribute.Tombstone;
 import org.weiwei.mythicDistribute.entity.RewardDistributionManager;
 import org.weiwei.mythicDistribute.util.Config;
 import org.weiwei.mythicDistribute.util.Message;
@@ -36,6 +37,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        Tombstone.shutdown();
 
         getLogger().info("mythicDistribute 已關閉");
     }

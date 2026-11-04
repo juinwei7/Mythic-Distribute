@@ -7,6 +7,7 @@ import io.lumine.mythic.core.mobs.ActiveMob;
 import io.lumine.mythic.core.items.MythicItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -38,6 +39,7 @@ public class EventManager implements Listener {
     public static void register() {
         DailyFirstTracker.load();
         FeaturedBonus.load();
+        Tombstone.register();
         Bukkit.getPluginManager().registerEvents(new EventManager(), Main.getInst());
     }
 
@@ -80,8 +82,8 @@ public class EventManager implements Listener {
     public void onMythicMobDeath(MythicMobDeathEvent event) {
         ActiveMob mob = event.getMob();
         trackedBosses.remove(mob.getUniqueId());
-        String killerName = event.getKiller() instanceof Player killer ? killer.getName() : "未知玩家";
-        distribute(mob.getType().getInternalName(), mob.getUniqueId(), killerName, event.getDrops());
+        String lastHit = event.getKiller() instanceof Player killer ? killer.getName() : null;
+        distribute(mob.getType().getInternalName(), mob.getUniqueId(), lastHit, event.getEntity().getLocation(), event.getDrops());
     }
 
     /**
@@ -95,8 +97,8 @@ public class EventManager implements Listener {
         if (bossId == null) return;
 
         Player killer = event.getEntity().getKiller();
-        String killerName = killer != null ? killer.getName() : "未知玩家";
-        Main.getInst().getLogger().warning("MythicMobs 沒有處理 " + bossId + " 的死亡（擊殺者：" + killerName + "），改由保底發放獎勵");
+        String lastHit = killer != null ? killer.getName() : null;
+        Main.getInst().getLogger().warning("MythicMobs 沒有處理 " + bossId + " 的死亡（擊殺者：" + (lastHit != null ? lastHit : "未知玩家") + "），改由保底發放獎勵");
 
         // MM 正常處理時會依 PreventOtherDrops 清掉原版掉落物，這裡比照
         boolean preventOtherDrops = MythicBukkit.inst().getMobManager().getMythicMob(bossId)
@@ -105,10 +107,12 @@ public class EventManager implements Listener {
         if (preventOtherDrops) {
             event.getDrops().clear();
         }
-        distribute(bossId, mobUuid, killerName, event.getDrops());
+        distribute(bossId, mobUuid, lastHit, event.getEntity().getLocation(), event.getDrops());
     }
 
-    private void distribute(String mobId, UUID mobUuid, String killerName, List<ItemStack> drops) {
+    /** lastHit：最後一擊的玩家，不是玩家打死的就是 null */
+    private void distribute(String mobId, UUID mobUuid, String lastHit, Location deathLocation, List<ItemStack> drops) {
+        String killerName = lastHit != null ? lastHit : "未知玩家";
         // 沒有配置獎勵的 BOSS 就跳過
         if (!RewardDistributionManager.hasReward(mobId)) return;
 
@@ -170,6 +174,9 @@ public class EventManager implements Listener {
 
         // 發送廣播訊息
         handleBossResult(Message.SEND_PRIZES__BROADCAST__KILL, killerName, distribution, damageList, distribution.isBroadcast(), distribution.isDiscord());
+
+        // 頭目墓碑
+        Tombstone.onBossDeath(mobId, distribution, deathLocation, lastHit, damageList, DamageCalculation.getFirstHitMillis(mobUuid));
 
         // 最後清除紀錄
         DamageCalculation.clearDamage(mobUuid);

@@ -18,6 +18,7 @@ public class RewardDistribution {
     private Strategy strategy;      // 獎勵策略
     private DailyFirst dailyFirst;  // 每日首殺加碼（沒設定就是 null）
     private Party party;            // 一起打的人（沒設定就是 null）
+    private Tombstone tombstone;    // 頭目墓碑（沒設定就是 null）
 
     @Data
     public static class Strategy {
@@ -57,6 +58,15 @@ public class RewardDistribution {
     public static class Party {
         private int min_damage;
         private List<String> command = new ArrayList<>();
+    }
+
+    /**
+     * 頭目墓碑：倒下時在原地立碑，寫倒下時間、幾人討伐、戰鬥多久、MVP、最後一擊；右鍵看傷害前五名。
+     * next 是碑上「下次出現」那一行（例如「每週三、六 20:01 再臨」），留空就不寫。
+     */
+    @Data
+    public static class Tombstone {
+        private String next = "";
     }
 
     @Data

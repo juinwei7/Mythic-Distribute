@@ -7,6 +7,7 @@ MESSAGE:
 
 SUB_COMMAND:
   RELOAD: 重新載入模組設定檔
+  TOMB: 頭目墓碑（list／clear／preview）
 
 SEND_PRIZES:
   PLAYER:
@@ -35,3 +36,19 @@ SEND_PRIZES:
       - '%rank_lines%' # 此處會動態替換為每名玩家的排名行
       - '&a🎁 獎勵已成功發送！'
       - '&8&m                                        &r'
+
+# 頭目墓碑（RewardDistribution.yml 的頭目設了 tombstone 才會立碑）
+# 可用：%boss_name% %time% %players% %duration% %mvp% %mvp_share% %last_hit% %next% %count%
+# 某一行的變數是空的（非玩家擊殺沒有最後一擊、沒設 next）整行就不寫
+TOMBSTONE:
+  LINES:
+    - '&6&l%boss_name%之墓'
+    - '&7倒下於 &f%time%'
+    - '&f%players% &7人討伐 · 戰鬥 &f%duration%'
+    - '&eMVP &f%mvp% &7（傷害 %mvp_share%）'
+    - '&7最後一擊 &f%last_hit%'
+    - '&8%next%'
+    - '&8右鍵看傷害前五名'
+  # 右鍵碑時私訊給玩家的前五名
+  TOP_HEADER: '&8&m          &r &6%boss_name%之墓 &7· %time% &8&m          '
+  TOP_LINE: '&e第 %rank% 名 &f%player% &7總傷 &c%damage% &7（%share%）'

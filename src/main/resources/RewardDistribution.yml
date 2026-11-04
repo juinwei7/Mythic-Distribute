@@ -4,6 +4,9 @@ boss_rewards:
     name: 祀林鳴魔帝
     broadcast: false
     discord: true
+    # 頭目墓碑（可省略）：倒下時原地立碑，寫時間、人數、戰鬥多久、MVP、最後一擊；next 留空就不寫下次時段
+    # tombstone:
+    #   next: '每週三、六 20:01 再臨'
     drop:
       - st_certificate01 0.5
     strategy:
