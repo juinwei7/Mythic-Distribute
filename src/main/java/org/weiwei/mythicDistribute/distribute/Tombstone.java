@@ -32,6 +32,7 @@ import org.weiwei.mythicDistribute.Main;
 import org.weiwei.mythicDistribute.entity.RewardDistribution;
 import org.weiwei.mythicDistribute.entity.RewardDistributionManager;
 import org.weiwei.mythicDistribute.util.ColorConversion;
+import org.weiwei.mythicDistribute.util.Config;
 import org.weiwei.mythicDistribute.util.Message;
 
 import java.io.File;
@@ -53,7 +54,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * 頭目墓碑（參考仙境傳說 MVP 墓碑）：設了 tombstone 的頭目倒下時，在原地立一塊石碑，
  * 寫倒下時間、幾人討伐、戰鬥多久、MVP（傷害第 1 名）、最後一擊與下次出現時段；右鍵看傷害前五名。
- * 同一隻頭目再出生、或再倒下換新碑時，舊碑就拆掉。碑是持久實體，重啟後還在；
+ * 同一隻頭目再出生、或再倒下換新碑時，舊碑就拆掉；同一個場地（同世界、Config.yml tombstone.venue_radius 格內）
+ * 只留最新的一塊，別的頭目在附近倒下也會換掉。碑是持久實體，重啟後還在；
  * 沒載入的舊碑等區塊載入時（EntitiesLoadEvent）比對 tomb_id，不是目前那塊就拆。
  * 每隻頭目的倒下次數、目前碑的位置與前五名記在 tombstones.yml。
  */
@@ -161,6 +163,7 @@ public final class Tombstone implements Listener {
     static Location place(String bossId, Data data, boolean counted) {
         Location base = findGround(data.deathLocation());
         removeTomb(bossId);
+        if (base != null) removeVenueTombs(bossId, base);
         Record record = records.computeIfAbsent(bossId, key -> new Record());
         if (counted) record.count++;
         if (base == null) {
@@ -306,6 +309,20 @@ public final class Tombstone implements Listener {
         record.entities = new ArrayList<>();
         save();
         return true;
+    }
+
+    /** 同一個場地只留一塊碑：同世界、venue_radius 格內別的頭目的碑都拆掉 */
+    private static void removeVenueTombs(String bossId, Location base) {
+        double radius = Config.getConfig().getDouble("tombstone.venue_radius", 48);
+        for (Map.Entry<String, Record> entry : records.entrySet()) {
+            Record other = entry.getValue();
+            if (entry.getKey().equals(bossId) || other.tombId == null) continue;
+            if (!base.getWorld().getName().equals(other.world)) continue;
+            double dx = other.x - base.getX(), dy = other.y - base.getY(), dz = other.z - base.getZ();
+            if (dx * dx + dy * dy + dz * dz > radius * radius) continue;
+            removeTomb(entry.getKey());
+            Main.getInst().getLogger().info("墓碑：" + bossId + " 在同一個場地倒下，換掉 " + entry.getKey() + " 的碑");
+        }
     }
 
     private static void removeIfStale(Entity entity) {

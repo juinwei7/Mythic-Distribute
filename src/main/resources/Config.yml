@@ -42,3 +42,7 @@ featured:
       command:
         - 'mm items give %player% 賽st源起之核 1'
         - 'dungeoncoin give %player% 5'
+
+# 頭目墓碑：同一個場地只留最新的一塊碑，同世界這麼多格內別的頭目的碑會被換掉
+tombstone:
+  venue_radius: 48
