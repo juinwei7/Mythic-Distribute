@@ -6,6 +6,8 @@ DISCORD_CHANNEL:
 featured:
   enabled: true
   placeholder: '%huanlan-core_featured_dungeon_id%'
+  # 脈動戰線淨化後休息中的區（逗號分隔，同 daily_first.group 代號）也套用一樣的加成；hu_front 沒裝就沒有
+  purified_placeholder: '%hufront_purified_groups%'
   # 加成副本的每日首殺加碼跑幾次
   daily_first_repeat: 2
   # 每人每天每座副本前幾次擊殺（排名獎或傷害達參與門檻）多發一份

@@ -68,22 +68,46 @@ final class FeaturedBonus {
     static String currentGroup() {
         ConfigurationSection section = section();
         if (section == null || !section.getBoolean("enabled", false)) return null;
+        return parsePlaceholder(section.getString("placeholder", "%huanlan-core_featured_dungeon_id%"));
+    }
+
+    /**
+     * 正在享有加成的副本：本週加成副本＋脈動戰線淨化後休息中的區（%hufront_purified_groups%，逗號分隔）。
+     * 淨化區的加成跟本週加成副本一模一樣（首殺多跑幾次、每天前幾次擊殺多發素材），玩家不用學新規則。
+     */
+    static Set<String> currentGroups() {
+        Set<String> groups = new HashSet<>();
+        String featured = currentGroup();
+        if (featured != null) groups.add(featured);
+        ConfigurationSection section = section();
+        if (section == null || !section.getBoolean("enabled", false)) return groups;
+        String purified = parsePlaceholder(section.getString("purified_placeholder", "%hufront_purified_groups%"));
+        if (purified != null) {
+            for (String group : purified.split(",")) {
+                if (!group.isBlank()) groups.add(group.trim());
+            }
+        }
+        return groups;
+    }
+
+    /** 解析變數；PlaceholderAPI 沒裝、變數沒註冊（原樣回傳 %…%）或空字串都回傳 null */
+    private static String parsePlaceholder(String placeholder) {
+        if (placeholder == null || placeholder.isBlank()) return null;
         if (!Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) return null;
         String value;
         try {
-            value = PlaceholderHook.parse(section.getString("placeholder", "%huanlan-core_featured_dungeon_id%"));
+            value = PlaceholderHook.parse(placeholder);
         } catch (Throwable throwable) {
             return null;
         }
         if (value == null) return null;
         value = value.trim();
-        // 沒有加成是空字串；huanlanCore 沒載入時 PlaceholderAPI 會原樣回傳 %…%
         return value.isEmpty() || value.contains("%") ? null : value;
     }
 
     /** 每日首殺加碼要跑幾次：加成副本 daily_first_repeat 次，其他 1 次 */
     static int dailyFirstRepeat(String group) {
-        if (group == null || !group.equals(currentGroup())) return 1;
+        if (group == null || !currentGroups().contains(group)) return 1;
         return Math.max(1, section().getInt("daily_first_repeat", 2));
     }
 
@@ -92,7 +116,7 @@ final class FeaturedBonus {
         RewardDistribution.DailyFirst dailyFirst = distribution.getDailyFirst();
         if (dailyFirst == null || dailyFirst.getGroup() == null) return;
         String group = dailyFirst.getGroup();
-        if (!group.equals(currentGroup())) return;
+        if (!currentGroups().contains(group)) return;
 
         ConfigurationSection section = section();
         List<String> commands = section.getStringList("groups." + group + ".command");
