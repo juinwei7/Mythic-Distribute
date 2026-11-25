@@ -15,7 +15,6 @@ public class DamageCalculation {
     private final UUID bossUUID;
     private final UUID playerUUID;
     private double maxDamage = 0;
-    private double minDamage = Double.MAX_VALUE;
     private double totalDamage = 0;
     private int hitCount = 0;
 
@@ -39,31 +38,7 @@ public class DamageCalculation {
         damCal.totalDamage += damage;
         damCal.hitCount++;
         if (damCal.maxDamage < damage) damCal.maxDamage = damage;
-        if (damage < damCal.minDamage) damCal.minDamage = damage;
         playerDamageMap.put(playerId, damCal);
-    }
-
-    /**
-     * 獲取玩家對 Boss 的總傷害
-     *
-     * @param playerId 玩家 UUID
-     * @param bossId   Boss UUID
-     * @return 傷害值
-     */
-    public static double getTotalDamage(UUID playerId, UUID bossId) {
-        DamageCalculation cal = getPlayerDamageInfo(playerId, bossId);
-        return cal == null ? 0.0 : cal.getTotalDamage();
-    }
-
-    /**
-     * 獲取玩家對 Boss 的資訊
-     *
-     * @param playerId 玩家 UUID
-     * @param bossId   Boss UUID
-     * @return DamageCalculation 對象
-     */
-    public static DamageCalculation getPlayerDamageInfo(UUID playerId, UUID bossId) {
-        return bossDamageMap.getOrDefault(bossId, new HashMap<>()).get(playerId);
     }
 
     /**
@@ -103,13 +78,6 @@ public class DamageCalculation {
      */
     public double getAverageDamage() {
         return hitCount == 0 ? 0.0 : totalDamage / hitCount;
-    }
-
-    /**
-     * 獲取實際最小傷害（如果從未攻擊過，回傳 0）
-     */
-    public double getMinDamage() {
-        return hitCount == 0 ? 0.0 : minDamage;
     }
 
     /**

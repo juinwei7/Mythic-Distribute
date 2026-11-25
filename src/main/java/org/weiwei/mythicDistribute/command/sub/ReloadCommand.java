@@ -11,7 +11,7 @@ import java.util.List;
 public class ReloadCommand extends SubCommand {
 
     public ReloadCommand() {
-        super("reload", Message.SUB_COMMAND__RELOAD, true);
+        super("reload", true);
     }
 
     @Override

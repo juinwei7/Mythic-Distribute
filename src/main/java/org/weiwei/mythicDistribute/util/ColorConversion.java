@@ -1,8 +1,6 @@
 package org.weiwei.mythicDistribute.util;
 
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,18 +28,6 @@ public class ColorConversion {
         return textToTranslateList.stream()
                 .map(ColorConversion::translateHexCodes)
                 .toList();
-    }
-
-    public static int getInt(String stToInt){
-        try {
-            return stToInt == null ? -1 : Integer.parseInt(stToInt);
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-    }
-
-    public static Player getPlayer(String playerSt){
-        return Bukkit.getPlayer(playerSt);
     }
 
 

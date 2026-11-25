@@ -4,9 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.weiwei.mythicDistribute.util.Message;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +19,7 @@ public abstract class SubCommand implements Comparable<SubCommand> {
     @Getter
     public static final Map<String, SubCommand> subCommandMap = new HashMap<>();
 
-    public String cmd, arg = "", description = "";
+    public String cmd, arg = "";
 
     @Setter
     public double priority = 100;
@@ -32,9 +30,8 @@ public abstract class SubCommand implements Comparable<SubCommand> {
     /**
      * @param cmd String
      */
-    public SubCommand(String cmd, Message message, boolean needOp) {
+    public SubCommand(String cmd, boolean needOp) {
         this.cmd = cmd;
-        this.description = Message.getMsg(message);
         this.needOp = needOp;
     }
 

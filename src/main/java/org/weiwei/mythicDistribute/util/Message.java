@@ -3,12 +3,8 @@ package org.weiwei.mythicDistribute.util;
 
 import lombok.Getter;
 
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.weiwei.mythicDistribute.Main;
 
 import java.io.File;
@@ -37,7 +33,6 @@ public enum Message {
     @Getter
     private static YamlConfiguration messages;
 
-    @Getter
     private static Tool tool = new Tool();
 
     /**
@@ -65,33 +60,6 @@ public enum Message {
      */
     public static List<String> getStringList(Message loc, Object... args) {
         return tool.getStringList(loc.toString(), args);
-    }
-
-    /**
-     * 發送訊息給玩家
-     */
-    public static void send(LivingEntity entity, Message loc, Object... args) {
-        tool.send(entity, loc.toString(), args);
-    }
-
-    /**
-     * 發送ActionBar訊息給玩家
-     */
-    public static void sendActionBar(LivingEntity entity, Message loc, Object... args) {
-        String message = getMsg(loc, args);
-        if (entity instanceof Player player){
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
-        } else {
-            entity.sendMessage(ColorConversion.translateHexCodes(message));
-        }
-    }
-
-    /**
-     * 發送List訊息給玩家
-     */
-    public static void sendList(LivingEntity entity, Message loc, Object... args) {
-        List<String> list = tool.getStringList(loc.toString(), args);
-        list.forEach(entity::sendMessage);
     }
 
 
@@ -134,14 +102,6 @@ public enum Message {
             return raw.stream()
                     .map(s -> ColorConversion.translateHexCodes(MessageFormat.format(s, args)))
                     .toList();
-        }
-
-        // 發送訊息給玩家
-        public void send(LivingEntity entity, String loc, Object... args) {
-            String path = getStringLoc(loc);
-            String raw = configuration.getString(path);
-            if (raw == null) return;
-            entity.sendMessage(ColorConversion.translateHexCodes(MessageFormat.format(raw, args)));
         }
 
         private String getStringLoc(String loc) {

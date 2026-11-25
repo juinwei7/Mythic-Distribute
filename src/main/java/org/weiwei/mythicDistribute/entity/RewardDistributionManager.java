@@ -127,11 +127,4 @@ public class RewardDistributionManager {
     public static RewardDistribution getReward(String bossId) {
         return bossRewardMap.get(bossId);
     }
-
-    // 安全獲取不可修改的 top list
-    public static List<RewardDistribution.RewardGroup> getTopRewards(String bossId) {
-        RewardDistribution config = bossRewardMap.get(bossId);
-        if (config == null) return Collections.emptyList();
-        return Collections.unmodifiableList(config.getStrategy().getTop());
-    }
 }

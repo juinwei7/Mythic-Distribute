@@ -27,7 +27,6 @@ import org.weiwei.mythicDistribute.util.Config;
 import org.weiwei.mythicDistribute.util.Message;
 import org.weiwei.playerdata.api.PlayerDataRegistry;
 import org.weiwei.playerdata.api.service.DiscordHookService;
-import org.weiwei.playerdata.api.service.PlayerDataService;
 
 import java.awt.*;
 import java.util.*;
@@ -275,55 +274,6 @@ public class EventManager implements Listener {
                     .replace("%hit_count%", String.valueOf(damage.getHitCount()));
             player.sendMessage(ColorConversion.translateHexCodes(replaced));
         }
-    }
-
-    // 發送 BOSS 獎勵廣播
-    private void sendBroadcast(Message message, String killName, RewardDistribution rewardDistribution, List<DamageCalculation> damageList) {
-        List<String> discordLines = new ArrayList<>();
-        List<String> broadcastMessage = Message.getStringList(message);
-
-        for (String line : broadcastMessage) {
-            line = line
-                    .replace("%killer_name%", killName)
-                    .replace("%boss_name%", rewardDistribution.getName());
-
-            if (line.contains("%rank_lines%")) {
-                Bukkit.broadcastMessage("§6⬇️ 排行榜：");
-                discordLines.add("📊 排行榜：");
-
-                for (int i = 0; i < damageList.size(); i++) {
-                    DamageCalculation dc = damageList.get(i);
-                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(dc.getPlayerUUID());
-                    String playerName = offlinePlayer.getName() != null ? offlinePlayer.getName() : "未知玩家";
-
-                    String rankStr = "§e🏅 第 " + (i + 1) + " 名：§a" + playerName +
-                            " §7| 總傷 §c" + String.format("%.1f", dc.getTotalDamage()) +
-                            " §7| 最大單擊 §6" + String.format("%.1f", dc.getMaxDamage());
-
-                    String discordStr = "🏅 第 " + (i + 1) + " 名：**" + playerName + "**｜總傷害 `" +
-                            String.format("%.1f", dc.getTotalDamage()) + "`｜最大單擊 `" +
-                            String.format("%.1f", dc.getMaxDamage()) + "`";
-
-                    Bukkit.broadcastMessage(rankStr);
-                    discordLines.add(discordStr);
-                }
-
-            } else {
-                Bukkit.broadcastMessage(ColorConversion.translateHexCodes(line));
-                discordLines.add(ColorConversion.translateHexCodes(line));
-            }
-        }
-
-        String discordMessage = String.join("\n", discordLines);
-
-        // 發送 Discord 通知
-        discordHookService.sendEmbed(
-                Config.getConfig().getString(Config.DISCORD_CHANNEL),
-                "BOSS 獎勵通知",
-                "玩家 " + killName + " 成功擊敗了 BOSS " + rewardDistribution.getName(),
-                discordMessage,
-                Color.CYAN
-        );
     }
 
     // 發送 BOSS 獎勵廣播

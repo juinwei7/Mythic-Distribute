@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.weiwei.mythicDistribute.command.SubCommand;
 import org.weiwei.mythicDistribute.distribute.Tombstone;
-import org.weiwei.mythicDistribute.util.Message;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class TombCommand extends SubCommand {
 
     public TombCommand() {
-        super("tomb", Message.SUB_COMMAND__TOMB, true);
+        super("tomb", true);
         setArg("<list|clear|preview>");
     }
 
